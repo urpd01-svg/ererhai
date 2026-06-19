@@ -145,10 +145,10 @@
         <div class="qno">질문 1</div>
         <h2 class="question">매장 방문경로를 알려주세요</h2>
         <div class="list">
-          <label class="option"><input type="radio" name="path"><span>인스타그램</span></label>
-          <label class="option"><input type="radio" name="path"><span>네이버</span></label>
-          <label class="option"><input type="radio" name="path"><span>홈페이지</span></label>
-          <label class="option"><input type="radio" name="path"><span>그 외</span></label>
+          <label class="option"><input type="radio" name="path" value="인스타그램"><span>인스타그램</span></label>
+          <label class="option"><input type="radio" name="path" value="네이버"><span>네이버</span></label>
+          <label class="option"><input type="radio" name="path" value="홈페이지"><span>홈페이지</span></label>
+          <label class="option"><input type="radio" name="path" value="그 외"><span>그 외</span></label>
         </div>
       </div>
 
@@ -170,11 +170,11 @@
         <div class="qno">질문 4</div>
         <h2 class="question">응대직원이 친절했나요</h2>
         <div class="list">
-          <label class="option"><input type="radio" name="kind"><span>매우 불친절했다</span></label>
-          <label class="option"><input type="radio" name="kind"><span>불친절했다</span></label>
-          <label class="option"><input type="radio" name="kind"><span>그냥 그랬다</span></label>
-          <label class="option"><input type="radio" name="kind"><span>친절했다</span></label>
-          <label class="option"><input type="radio" name="kind"><span>매우 친절했다</span></label>
+          <label class="option"><input type="radio" name="kind" value="매우 불친절했다"><span>매우 불친절했다</span></label>
+          <label class="option"><input type="radio" name="kind" value="불친절했다"><span>불친절했다</span></label>
+          <label class="option"><input type="radio" name="kind" value="그냥 그랬다"><span>그냥 그랬다</span></label>
+          <label class="option"><input type="radio" name="kind" value="친절했다"><span>친절했다</span></label>
+          <label class="option"><input type="radio" name="kind" value="매우 친절했다"><span>매우 친절했다</span></label>
         </div>
       </div>
 
@@ -283,7 +283,7 @@
 <script>
 (function(){
   const BRANCH_NAME = "얼얼하이 성안점";
-  const APP_URL = "https://script.google.com/macros/s/AKfycbwm9VEyfw7LUnAljqooi25jKl7Bww-_P8Q6grWxXX0osoyoZe1hZgmiWtBhXbtWdR1b/exec";
+  const APP_URL = "https://script.google.com/macros/s/AKfycbzUuzwy6yKXJUrgCw8rUumtXcmGhnRnpTqSULq9uocNQ7o4-nR-XWjKgbK03lT4WKJ4/exec";
   const tasteState = {value: 0};
   const cleanState = {value: 0};
   const likeSet = new Set();
@@ -410,4 +410,5 @@
 })();
 </script>
 
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body></html>
