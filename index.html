@@ -1,3 +1,13 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#8B0304">
+<title>얼얼하이 성안점 - 고객만족 설문조사</title>
+</head>
+<body>
 <style>
   body{font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:#171717;}
 
@@ -30,7 +40,7 @@
   .option input{transform:scale(1.1)}
 
   .stars{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
-  .star{font-size:36px;line-height:1;color:var(--color-border-default);cursor:pointer;transition:.15s ease;user-select:none}
+  .star{font-size:36px;line-height:1;color:#cfd2d6;cursor:pointer;transition:.15s ease;user-select:none}
   .star.active{color:#f5b301}
   .rating-text{margin-top:8px;font-size:12px;color:#5f6368}
 
@@ -61,6 +71,42 @@
     .staff-grid{gap:6px}
     .staff-name{font-size:11px}
     .react-btn{padding:4px 6px;font-size:10px}
+  }
+
+  /* Mobile optimization */
+  html, body{margin:0;padding:0;background:#f3f4f6;font-size:16px}
+  .wrap{max-width:760px;margin:0 auto;padding:14px}
+  @media (max-width:640px){
+    .wrap{padding:8px}
+    .card{border-radius:14px}
+    .hero{padding:26px 16px 22px}
+    .brand-name, .branch-name{font-size:22px !important}
+    .title{font-size:24px !important}
+    .sub{font-size:14px !important}
+    .start-btn{width:100%;height:54px;font-size:17px;border-radius:14px}
+    .content{padding:16px 14px 22px}
+    .qno{font-size:13px}
+    .question{font-size:18px !important;line-height:1.5}
+    .helper{font-size:14px}
+    .option{padding:14px;font-size:15px;min-height:48px}
+    .option input{transform:scale(1.25);margin-right:2px}
+    textarea{font-size:15px;min-height:130px}
+    .stars{justify-content:space-between;gap:4px}
+    .star{font-size:38px}
+    .staff-grid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;gap:8px}
+    .staff-card{padding:12px 8px;border-radius:14px}
+    .staff-name{font-size:14px}
+    .react-btn{padding:8px 12px;font-size:13px}
+    .upload-actions{flex-direction:column;gap:8px}
+    .upload-btn{width:100%;min-width:0;padding:16px;font-size:15px}
+    .submit-btn{width:100%;height:54px;font-size:17px;border-radius:14px}
+    .submit-row{justify-content:stretch}
+    .note{font-size:13px;line-height:1.7}
+  }
+  @media (max-width:380px){
+    .star{font-size:32px}
+    .question{font-size:17px !important}
+    .title{font-size:22px !important}
   }
 </style>
 
@@ -201,27 +247,13 @@
   .thanks-card{background:#fff;border-radius:18px;max-width:420px;width:100%;padding:28px 22px;text-align:center;box-shadow:0 18px 40px rgba(0,0,0,0.2)}
   .thanks-title{font-size:22px;font-weight:800;margin:0 0 8px;color:#111}
   .thanks-msg{font-size:14px;color:#5f6368;line-height:1.6;margin:0 0 18px}
-  .thanks-btn{border:none;background:#171717;color:#fff;border-radius:12px;padding:12px 22px;font-weight:800;font-size:14px;cursor:pointer}
+  .thanks-btn{border:none;background:#171717;color:#fff;border-radius:12px;padding:12px 22px;font-weight:800;font-size:14px;cursor:pointer;width:100%;max-width:200px}
   .preview-img{margin-top:10px;display:none;border:1px solid #dadce0;border-radius:10px;overflow:hidden}
   .preview-img img{display:block;width:100%;height:auto}
   .upload-btn input[type=file]{display:none}
   .submitting .submit-btn{opacity:0.6;cursor:not-allowed}
+  .err{color:#b42318;font-size:13px;margin-top:8px;display:none}
 </style>
-
-<iframe name="nps_post_target" id="nps_post_target" style="display:none"></iframe>
-
-<form id="nps_form" method="POST" action="https://script.google.com/macros/s/AKfycbw6xEcwt1uy2c99Gwhw8-r1vh5xe4N1fypY7n2POL_Hj2qo5ixl_NeTqPSoMqVH5VH7/exec" target="nps_post_target" style="display:none">
-  <input type="hidden" name="branch" value="얼얼하이 성안점">
-  <input type="hidden" name="q1" id="f_q1">
-  <input type="hidden" name="q2" id="f_q2">
-  <input type="hidden" name="q3" id="f_q3">
-  <input type="hidden" name="q4" id="f_q4">
-  <input type="hidden" name="q5" id="f_q5">
-  <input type="hidden" name="q6" id="f_q6">
-  <input type="hidden" name="q7" id="f_q7">
-  <input type="hidden" name="q8" id="f_q8">
-  <input type="hidden" name="receipt_base64" id="f_receipt">
-</form>
 
 <div class="thanks-overlay" id="thanksOverlay" role="dialog" aria-modal="true">
   <div class="thanks-card">
@@ -234,15 +266,17 @@
 <script>
 (function(){
   const BRANCH_NAME = "얼얼하이 성안점";
+  const APP_URL = "https://script.google.com/macros/s/AKfycbw6xEcwt1uy2c99Gwhw8-r1vh5xe4N1fypY7n2POL_Hj2qo5ixl_NeTqPSoMqVH5VH7/exec";
   const tasteState = {value: 0};
   const cleanState = {value: 0};
   const likeSet = new Set();
   const dislikeSet = new Set();
   let receiptDataUrl = '';
+  let inflight = false;
 
-  // -------- Star tracking (rebind to existing star groups) --------
+  // Star tracking
   document.querySelectorAll('.stars').forEach(group => {
-    const key = group.dataset.key; // 'taste' or 'clean'
+    const key = group.dataset.key;
     [...group.children].forEach(star => {
       star.addEventListener('click', () => {
         const v = Number(star.dataset.v);
@@ -251,42 +285,53 @@
     });
   });
 
-  // -------- Staff toggle tracking (rebind to existing buttons) --------
+  // Staff toggle tracking (after preview-script toggled .active)
   document.querySelectorAll('.react-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const name = btn.dataset.name;
       const isLike = btn.classList.contains('like');
       const set = isLike ? likeSet : dislikeSet;
-      // .active class toggle already happened in prior handler;
-      // re-evaluate after that handler ran:
       setTimeout(() => {
         if (btn.classList.contains('active')) set.add(name); else set.delete(name);
       }, 0);
     });
   });
 
-  // -------- Receipt upload --------
-  function attachReceipt(inputEl, previewBox) {
-    inputEl.addEventListener('change', e => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
+  // Receipt upload (resize to fit 50KB POST limit)
+  function resizeToDataURL(file, maxSide, quality) {
+    return new Promise(resolve => {
+      const img = new Image();
       const reader = new FileReader();
-      reader.onload = ev => {
-        receiptDataUrl = ev.target.result;
-        if (previewBox) {
-          previewBox.innerHTML = '<img src="' + receiptDataUrl + '" alt="영수증 미리보기">';
-          previewBox.style.display = 'block';
-        }
+      reader.onload = e => { img.src = e.target.result; };
+      img.onload = () => {
+        const ratio = Math.min(maxSide / img.width, maxSide / img.height, 1);
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL('image/jpeg', quality));
       };
       reader.readAsDataURL(file);
     });
   }
 
-  // Build the actual file inputs by upgrading the existing decorative buttons
+  function attachReceipt(inputEl, previewBox) {
+    inputEl.addEventListener('change', async e => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      const dataUrl = await resizeToDataURL(file, 1280, 0.78);
+      receiptDataUrl = dataUrl;
+      if (previewBox) {
+        previewBox.innerHTML = '<img src="' + dataUrl + '" alt="영수증 미리보기">';
+        previewBox.style.display = 'block';
+      }
+    });
+  }
+
   const uploadBtns = document.querySelectorAll('.upload-btn');
   let previewBox = null;
   if (uploadBtns.length) {
-    // create a preview area right after the last upload button container
     const parent = uploadBtns[0].parentElement;
     previewBox = document.createElement('div');
     previewBox.className = 'preview-img';
@@ -299,16 +344,17 @@
       if (idx === 1) input.setAttribute('capture', 'environment');
       btn.appendChild(input);
       btn.style.cursor = 'pointer';
-      btn.addEventListener('click', () => input.click());
+      btn.addEventListener('click', e => { if (e.target.tagName !== 'INPUT') input.click(); });
       attachReceipt(input, previewBox);
     });
   }
 
-  // -------- Submit --------
+  // Submit using fetch(no-cors) with URL-encoded body
   const submitBtn = document.querySelector('.submit-btn');
   if (submitBtn) {
-    submitBtn.addEventListener('click', () => {
-      if (document.body.classList.contains('submitting')) return;
+    submitBtn.addEventListener('click', async () => {
+      if (inflight) return;
+      inflight = true;
 
       const q1 = (document.querySelector('input[name="path"]:checked') || {}).value || '';
       const q2 = tasteState.value;
@@ -320,27 +366,40 @@
       const q7 = textareas[0] ? textareas[0].value.trim() : '';
       const q8 = textareas[1] ? textareas[1].value.trim() : '';
 
-      document.getElementById('f_q1').value = q1;
-      document.getElementById('f_q2').value = q2;
-      document.getElementById('f_q3').value = q3;
-      document.getElementById('f_q4').value = q4;
-      document.getElementById('f_q5').value = q5;
-      document.getElementById('f_q6').value = q6;
-      document.getElementById('f_q7').value = q7;
-      document.getElementById('f_q8').value = q8;
-      document.getElementById('f_receipt').value = receiptDataUrl || '';
+      const params = new URLSearchParams();
+      params.append('branch', BRANCH_NAME);
+      params.append('q1', q1);
+      params.append('q2', String(q2));
+      params.append('q3', String(q3));
+      params.append('q4', q4);
+      params.append('q5', q5);
+      params.append('q6', q6);
+      params.append('q7', q7);
+      params.append('q8', q8);
+      params.append('receipt_base64', receiptDataUrl || '');
 
       document.body.classList.add('submitting');
+      const origText = submitBtn.textContent;
       submitBtn.textContent = '제출 중...';
 
-      const iframe = document.getElementById('nps_post_target');
-      iframe.addEventListener('load', function onLoad(){
-        iframe.removeEventListener('load', onLoad);
+      try {
+        await fetch(APP_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
+          body: params.toString()
+        });
         document.getElementById('thanksOverlay').style.display = 'flex';
-      });
-
-      document.getElementById('nps_form').submit();
+      } catch (err) {
+        // no-cors fetch resolves on any network response; this catch is for actual network failure
+        alert('전송 중 문제가 발생했습니다. 네트워크 확인 후 다시 시도해주세요.');
+        submitBtn.textContent = origText;
+        document.body.classList.remove('submitting');
+        inflight = false;
+      }
     });
   }
 })();
 </script>
+
+</body></html>
