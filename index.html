@@ -4,7 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="format-detection" content="telephone=no">
-<meta name="theme-color" content="#8B0304">
 <title>얼얼하이 성안점 - 고객만족 설문조사</title>
 </head>
 <body>
@@ -73,9 +72,25 @@
     .react-btn{padding:4px 6px;font-size:10px}
   }
 
-  /* Mobile optimization */
   html, body{margin:0;padding:0;background:#f3f4f6;font-size:16px}
   .wrap{max-width:760px;margin:0 auto;padding:14px}
+
+  .receipt-callout{
+    background:linear-gradient(180deg,#FFF9DB 0%,#FFF3BF 100%);
+    border:1px solid #F2C94C;
+    border-radius:14px;
+    padding:14px 16px;
+    margin:6px 0 14px;
+    color:#5C3D00;
+    line-height:1.6;
+  }
+  .receipt-callout-title{font-size:15px;font-weight:900;color:#8a5a00;margin-bottom:4px}
+  .receipt-callout-text{font-size:14px;color:#5C3D00}
+  .receipt-callout-text b{color:#A05A00;font-weight:900}
+
+  .upload-actions{display:flex;flex-wrap:wrap;gap:10px;width:100%}
+  .upload-btn{appearance:none;border:1px dashed #c7cad0;background:#f5f6f8;border-radius:12px;padding:14px;font-size:14px;font-weight:700;cursor:pointer;color:#171717;flex:1 1 220px;min-width:0;text-align:center;line-height:1.4;white-space:normal;word-break:keep-all}
+
   @media (max-width:640px){
     .wrap{padding:8px}
     .card{border-radius:14px}
@@ -97,11 +112,14 @@
     .staff-card{padding:12px 8px;border-radius:14px}
     .staff-name{font-size:14px}
     .react-btn{padding:8px 12px;font-size:13px}
-    .upload-actions{flex-direction:column;gap:8px}
-    .upload-btn{width:100%;min-width:0;padding:16px;font-size:15px}
+    .upload-actions{flex-direction:column;gap:10px}
+    .upload-btn{width:100%;flex:0 0 auto;padding:16px;font-size:15px;line-height:1.5;min-height:60px;display:flex;align-items:center;justify-content:center}
     .submit-btn{width:100%;height:54px;font-size:17px;border-radius:14px}
     .submit-row{justify-content:stretch}
     .note{font-size:13px;line-height:1.7}
+    .receipt-callout{padding:14px 14px;border-radius:12px}
+    .receipt-callout-title{font-size:15px}
+    .receipt-callout-text{font-size:14px}
   }
   @media (max-width:380px){
     .star{font-size:32px}
@@ -189,7 +207,7 @@
       <div class="section">
         <div class="qno">이벤트</div>
         <h2 class="question">영수증 첨부 이벤트</h2>
-        <div class="helper">식사 후 받으신 영수증을 첨부해주시면 추첨을 통해 소정의 상품을 드립니다.</div>
+        <div class="receipt-callout"><div class="receipt-callout-title">🎁 영수증 첨부 이벤트</div><div class="receipt-callout-text">식사 후 받으신 <b>영수증을 첨부</b>해주시면 <b>추첨을 통해 소정의 상품</b>을 드립니다.</div></div>
         <div class="upload-actions">
           <div class="upload-btn">📷 영수증 사진 첨부하기 (앨범)</div>
           <div class="upload-btn">📸 지금 바로 찍어서 첨부하기</div>
@@ -252,7 +270,6 @@
   .preview-img img{display:block;width:100%;height:auto}
   .upload-btn input[type=file]{display:none}
   .submitting .submit-btn{opacity:0.6;cursor:not-allowed}
-  .err{color:#b42318;font-size:13px;margin-top:8px;display:none}
 </style>
 
 <div class="thanks-overlay" id="thanksOverlay" role="dialog" aria-modal="true">
@@ -266,7 +283,7 @@
 <script>
 (function(){
   const BRANCH_NAME = "얼얼하이 성안점";
-  const APP_URL = "https://script.google.com/macros/s/AKfycbw6xEcwt1uy2c99Gwhw8-r1vh5xe4N1fypY7n2POL_Hj2qo5ixl_NeTqPSoMqVH5VH7/exec";
+  const APP_URL = "https://script.google.com/macros/s/AKfycbwm9VEyfw7LUnAljqooi25jKl7Bww-_P8Q6grWxXX0osoyoZe1hZgmiWtBhXbtWdR1b/exec";
   const tasteState = {value: 0};
   const cleanState = {value: 0};
   const likeSet = new Set();
@@ -274,7 +291,6 @@
   let receiptDataUrl = '';
   let inflight = false;
 
-  // Star tracking
   document.querySelectorAll('.stars').forEach(group => {
     const key = group.dataset.key;
     [...group.children].forEach(star => {
@@ -285,7 +301,6 @@
     });
   });
 
-  // Staff toggle tracking (after preview-script toggled .active)
   document.querySelectorAll('.react-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const name = btn.dataset.name;
@@ -297,7 +312,6 @@
     });
   });
 
-  // Receipt upload (resize to fit 50KB POST limit)
   function resizeToDataURL(file, maxSide, quality) {
     return new Promise(resolve => {
       const img = new Image();
@@ -349,7 +363,6 @@
     });
   }
 
-  // Submit using fetch(no-cors) with URL-encoded body
   const submitBtn = document.querySelector('.submit-btn');
   if (submitBtn) {
     submitBtn.addEventListener('click', async () => {
@@ -366,32 +379,27 @@
       const q7 = textareas[0] ? textareas[0].value.trim() : '';
       const q8 = textareas[1] ? textareas[1].value.trim() : '';
 
-      const params = new URLSearchParams();
-      params.append('branch', BRANCH_NAME);
-      params.append('q1', q1);
-      params.append('q2', String(q2));
-      params.append('q3', String(q3));
-      params.append('q4', q4);
-      params.append('q5', q5);
-      params.append('q6', q6);
-      params.append('q7', q7);
-      params.append('q8', q8);
-      params.append('receipt_base64', receiptDataUrl || '');
+      const payload = {
+        branch: BRANCH_NAME,
+        q1: q1, q2: q2, q3: q3, q4: q4,
+        q5: q5, q6: q6, q7: q7, q8: q8,
+        receipt_base64: receiptDataUrl || ''
+      };
 
       document.body.classList.add('submitting');
       const origText = submitBtn.textContent;
       submitBtn.textContent = '제출 중...';
 
       try {
+        // text/plain avoids CORS preflight while still letting Apps Script read postData.contents as JSON
         await fetch(APP_URL, {
           method: 'POST',
           mode: 'no-cors',
-          headers: {'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'},
-          body: params.toString()
+          headers: {'Content-Type': 'text/plain;charset=utf-8'},
+          body: JSON.stringify(payload)
         });
         document.getElementById('thanksOverlay').style.display = 'flex';
       } catch (err) {
-        // no-cors fetch resolves on any network response; this catch is for actual network failure
         alert('전송 중 문제가 발생했습니다. 네트워크 확인 후 다시 시도해주세요.');
         submitBtn.textContent = origText;
         document.body.classList.remove('submitting');
